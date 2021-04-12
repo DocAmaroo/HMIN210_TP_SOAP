@@ -31,6 +31,8 @@ namespace Exercice4_App.IbisHotelServices {
         
         private System.Threading.SendOrPostCallback AuthentificationOperationCompleted;
         
+        private System.Threading.SendOrPostCallback GetHotelOperationCompleted;
+        
         private System.Threading.SendOrPostCallback GetOffresOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetOffreOperationCompleted;
@@ -81,6 +83,9 @@ namespace Exercice4_App.IbisHotelServices {
         public event AuthentificationCompletedEventHandler AuthentificationCompleted;
         
         /// <remarks/>
+        public event GetHotelCompletedEventHandler GetHotelCompleted;
+        
+        /// <remarks/>
         public event GetOffresCompletedEventHandler GetOffresCompleted;
         
         /// <remarks/>
@@ -120,6 +125,33 @@ namespace Exercice4_App.IbisHotelServices {
             if ((this.AuthentificationCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.AuthentificationCompleted(this, new AuthentificationCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetHotel", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public string GetHotel() {
+            object[] results = this.Invoke("GetHotel", new object[0]);
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetHotelAsync() {
+            this.GetHotelAsync(null);
+        }
+        
+        /// <remarks/>
+        public void GetHotelAsync(object userState) {
+            if ((this.GetHotelOperationCompleted == null)) {
+                this.GetHotelOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetHotelOperationCompleted);
+            }
+            this.InvokeAsync("GetHotel", new object[0], this.GetHotelOperationCompleted, userState);
+        }
+        
+        private void OnGetHotelOperationCompleted(object arg) {
+            if ((this.GetHotelCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetHotelCompleted(this, new GetHotelCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -279,6 +311,32 @@ namespace Exercice4_App.IbisHotelServices {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((bool)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void GetHotelCompletedEventHandler(object sender, GetHotelCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetHotelCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetHotelCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
             }
         }
     }

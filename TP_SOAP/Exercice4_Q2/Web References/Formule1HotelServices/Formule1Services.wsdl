@@ -17,6 +17,16 @@
           </s:sequence>
         </s:complexType>
       </s:element>
+      <s:element name="GetHotel">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetHotelResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetHotelResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
       <s:element name="GetOffres">
         <s:complexType>
           <s:sequence>
@@ -74,6 +84,12 @@
   <wsdl:message name="AuthentificationSoapOut">
     <wsdl:part name="parameters" element="tns:AuthentificationResponse" />
   </wsdl:message>
+  <wsdl:message name="GetHotelSoapIn">
+    <wsdl:part name="parameters" element="tns:GetHotel" />
+  </wsdl:message>
+  <wsdl:message name="GetHotelSoapOut">
+    <wsdl:part name="parameters" element="tns:GetHotelResponse" />
+  </wsdl:message>
   <wsdl:message name="GetOffresSoapIn">
     <wsdl:part name="parameters" element="tns:GetOffres" />
   </wsdl:message>
@@ -103,6 +119,10 @@
       <wsdl:input message="tns:AuthentificationSoapIn" />
       <wsdl:output message="tns:AuthentificationSoapOut" />
     </wsdl:operation>
+    <wsdl:operation name="GetHotel">
+      <wsdl:input message="tns:GetHotelSoapIn" />
+      <wsdl:output message="tns:GetHotelSoapOut" />
+    </wsdl:operation>
     <wsdl:operation name="GetOffres">
       <wsdl:input message="tns:GetOffresSoapIn" />
       <wsdl:output message="tns:GetOffresSoapOut" />
@@ -124,6 +144,15 @@
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
     <wsdl:operation name="Authentification">
       <soap:operation soapAction="http://tempuri.org/Authentification" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetHotel">
+      <soap:operation soapAction="http://tempuri.org/GetHotel" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -172,6 +201,15 @@
     <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
     <wsdl:operation name="Authentification">
       <soap12:operation soapAction="http://tempuri.org/Authentification" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetHotel">
+      <soap12:operation soapAction="http://tempuri.org/GetHotel" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

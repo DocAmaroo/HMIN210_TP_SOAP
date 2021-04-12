@@ -44,17 +44,17 @@ namespace Exercice4_App
         public List<Reservation> Reservations { get; set; }
         public void Display()
         {
-            Console.WriteLine("\tChambre n°" + this.NumChambre);
-            Console.WriteLine("\tNombre lits   : " + this.NbLit);
-            Console.WriteLine("\tPrix          : " + this.Prix + "euros/nuit");
-            Console.WriteLine("\tDisponible " + (this.Reservations.Count != 0 ? "le : " + this.Reservations.Last().DateDepart : "dès maintenant"));
+            Console.WriteLine("Chambre n°" + this.NumChambre);
+            Console.WriteLine("Nombre lits   : " + this.NbLit);
+            Console.WriteLine("Prix          : " + this.Prix + "euros/nuit");
+            Console.WriteLine("Disponible " + (this.Reservations.Count != 0 ? "le : " + this.Reservations.Last().DateDepart : "dès maintenant"));
         }
         public override string ToString()
         {
-            return "\tChambre n°" + this.NumChambre
-            + "\n\tNombre lits   : " + this.NbLit
-            + "\n\tPrix          : " + this.Prix + "euros/nuit"
-            + "\n\tDisponible " + (this.Reservations.Count != 0 ? "le : " + this.Reservations.Last().DateDepart : "dès maintenant");
+            return "Chambre n°" + this.NumChambre
+            + "\nNombre lits   : " + this.NbLit
+            + "\nPrix          : " + this.Prix + "euros/nuit"
+            + "\nDisponible " + (this.Reservations.Count != 0 ? "le : " + this.Reservations.Last().DateDepart : "dès maintenant");
         }
     }
 }

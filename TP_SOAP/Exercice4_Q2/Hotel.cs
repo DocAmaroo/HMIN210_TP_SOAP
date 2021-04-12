@@ -35,5 +35,17 @@ namespace Exercice4_App
         public int NbEtoile { get; set; }
         public List<Chambre> Chambres { get; set; }
         public List<Agence> AgencesPartenaire { get; set; }
+
+        public string FullAdresseToString()
+        {
+            return this.Rue + ", " + this.LieuDit + ", " + this.Ville + ", " + this.Pays;
+        }
+        public override string ToString()
+        {
+            return "Nom     : " + this.Nom
+                + "\nAdresse : " + this.FullAdresseToString()
+                + "\nGPS     : " + this.PositionGPS
+                + "\nEtoiles : " + this.NbEtoile +"*";
+        }
     }
 }

@@ -13,30 +13,31 @@ namespace Exercice4_App
 {
     public class Program
     {
+        private static IbisServices ibisServices = new IbisServices();
+        private static Formule1Services formule1Services = new Formule1Services();
         static void Main(string[] args)
         {
 
             // --- Services des hotels
-            IbisServices ibisServices = new IbisServices();
             ibisServices.GenerateHotel(); // Met en place l'hotel (chambres, agence partenaire, etc..). Remplace une base de données
-
-            Formule1Services formule1Services = new Formule1Services();
             formule1Services.GenerateHotel(); // Met en place l'hotel (chambres, agence partenaire, etc..). Remplace une base de données
 
-            Console.WriteLine("\t\t Bienvenue sur Trivaga, l'agence d'hotel au plus proche de ses clients !");
+            string ibisHotel = ibisServices.GetHotel();
+            string formule1Hotel = formule1Services.GetHotel();
+            string[] hotels = new string[2] { ibisHotel, formule1Hotel };
+
+            ConsoleWriteLineWithForegroundColor(ConsoleColor.DarkYellow, "\t\t\tBienvenue sur l'agence Trivaga.\n");
+            ConsoleWriteLineWithForegroundColor(ConsoleColor.DarkYellow, "\t\tL'agence d'hotel au plus proche de ses clients.");
 
             while (true)
             {
                 // --- On demande l'hotel à consulter
-                string[] hotels = new string[2] { "Ibis", "Formule1" };
                 int hotelChoose = askHotel(hotels);
 
-                Console.WriteLine("[+] Vous avez choisis l'hotel " + hotels[hotelChoose - 1]);
-
-                // --- Authentification simple (login: agenceName, password: admin)
+                // --- Authentification simple (login: agenceName || anything, password: admin)
                 string[] auth = HandleAuthentification("Trivaga");
-                int flag = 0;
 
+                int flag = 0;
                 switch(hotelChoose)
                 {
                     case 1:
@@ -47,7 +48,7 @@ namespace Exercice4_App
                                 flag = -1;
                                 break;
                             }
-                            Console.WriteLine("[-] Login ou mot de passe incorrect. Veuillez recommencer");
+                            ConsoleWriteLineWithFlag(3, "Login ou mot de passe incorrect. Veuillez recommencer");
                             auth = HandleAuthentification("Trivaga");
                             flag = 0;
                         }
@@ -60,7 +61,7 @@ namespace Exercice4_App
                                 flag = -1;
                                 break;
                             }
-                            Console.WriteLine("[-] Login ou mot de passe incorrect. Veuillez recommencer");
+                            ConsoleWriteLineWithFlag(3, "Login ou mot de passe incorrect. Veuillez recommencer");
                             auth = HandleAuthentification("Trivaga");
                             flag = 0;
                         }
@@ -75,13 +76,15 @@ namespace Exercice4_App
                     // --- On demande à l'utilisateur ce qu'il recherche
                     string[] filter = askOffresFilter();
                     string jsonOffres = "";
+                    DateTime date = ParseDate(filter[1]);
+                    int nbPersonne = int.Parse(filter[0]);
                     switch (hotelChoose)
                     {
                         case 1:
-                            jsonOffres = ibisServices.GetOffres(ParseDate(filter[1]), int.Parse(filter[0]));
+                            jsonOffres = ibisServices.GetOffres(date, nbPersonne);
                             break;
                         case 2:
-                            jsonOffres = formule1Services.GetOffres(ParseDate(filter[1]), int.Parse(filter[0]));
+                            jsonOffres = formule1Services.GetOffres(date, nbPersonne);
                             break;
                     }
                     List<Chambre> offres = JsonConvert.DeserializeObject<List<Chambre>>(jsonOffres);
@@ -92,19 +95,16 @@ namespace Exercice4_App
                     {
                         Client client;
                         string reservationResponse = null;
-                        Console.WriteLine("\n[~] Vous souhaitez réserver l'offre suivante: ");
                         offreChoose.Display();
 
                         // --- On demande les informations clients, si non fournis on annule la réservation.
                         client = askClientInformation();
-                        if (client == null)
-                        {
-                            Console.WriteLine("[-] Annulation de la réservation...");
-                        }
+                        if (client == null) ConsoleWriteLineWithFlag(3, "Annulation de la réservation...", true);
                         else
                         {
                             if (confirmReservation(offreChoose, client))
                             {
+                                // TODO: offreChoose ID problème
                                 Reservation reservation = new Reservation(ParseDate(filter[1]), ParseDate(filter[2]), int.Parse(filter[0]), client, offreChoose.Id);
                                 String jsonReservation = JsonConvert.SerializeObject(reservation);
                                 switch (hotelChoose)
@@ -116,14 +116,14 @@ namespace Exercice4_App
                                         reservationResponse = formule1Services.MakeReservation(jsonReservation);
                                         break;
                                 }
-                                if (reservationResponse == null) Console.WriteLine("\n\n[-] Cette offre n'existe pas ou une erreur est survenue, veuillez réessayer.");
+                                if (reservationResponse == null) ConsoleWriteLineWithFlag(3, "Cette offre n'existe pas ou une erreur est survenue, veuillez réessayer.", true);
                                 else
                                 {
-                                    Console.WriteLine(reservationResponse);
+                                    ConsoleWriteLineWithFlag(0, reservationResponse, true);
                                     break;
                                 }
                             }
-                            else Console.WriteLine("[-] Annulation de la réservation...");
+                            else ConsoleWriteLineWithFlag(3, "Annulation de la réservation...", true);
                         }
                     }
                 }
@@ -139,37 +139,34 @@ namespace Exercice4_App
         static string[] HandleAuthentification(string agenceName)
         {
             string[] auth = new string[2];
-            Console.WriteLine("\n\n##### Veuillez-vous connecter pour continuer #####\n");
-            Console.WriteLine("/!\\ (Pour annuler la réservation utiliser exit comme login et mot de passe) /!\\");
-            Console.Write("Login    :(" + agenceName + ") ");
-            string login = Console.ReadLine();
-            if (login.Equals(""))
-            {
-                return null;
-            }
-            auth[0] = login;
+            ConsoleWriteLineWithFlag(1, "Connexion via l'agence:\n", true);
+            ConsoleWriteLineWithForegroundColor(ConsoleColor.Yellow, "TIPS: en vous connectant via l'agence vous aurez les meilleurs prix\n");
+
+            Console.Write("\tLogin    :(" + agenceName + ") ");
+            auth[0] = Console.ReadLine();
 
 
-            Console.Write("Password :(admin) ");
+            Console.Write("\tPassword :(admin) ");
             auth[1] = Console.ReadLine();
             return auth;
         }
 
         static int askHotel(string[] hotels)
         {
-            int choice = -1;
+            int choice;
             do
             {
-                Console.WriteLine("\n\n[~] Quel hotel souhaitez-vous consulter ? ");
+                ConsoleWriteLineWithFlag(1, "Quel hotel souhaitez-vous consulter ?\n", true);
 
                 int i = 0;
                 foreach (string hotel in hotels)
                 {
-                    Console.WriteLine(i + 1 + " - " + hotel);
+                    ConsoleWriteLineWithForegroundColor(ConsoleColor.Blue, "\n\nHotel#" + (i + 1) + " --------------");
+                    Console.Write(hotel);
                     i++;
                 }
 
-                Console.Write("\nVotre choix: ");
+                Console.Write("\n\nVotre choix: Hotel#");
                 choice = int.Parse(Console.ReadLine());
             } while (choice < 1 || choice > hotels.Length);
 
@@ -178,15 +175,15 @@ namespace Exercice4_App
 
         static string[] askOffresFilter()
         {
-            Console.WriteLine("\n\n[~] Donner nous plus d'information sur les offres que vous recherchez");
+            ConsoleWriteLineWithFlag(1, "Donner nous plus d'information sur les offres que vous recherchez\n\n", true);
 
-            Console.Write("Nombre de personnes (entre 1 et 5): ");
+            Console.Write("\tNombre de personnes (entre 1 et 5): ");
             string nbPersonne = Console.ReadLine();
 
-            Console.Write("Date de début (jj/mm/aaaa)        : (choisir une date en mars 2021 ex: 10/03/2021) ");
+            Console.Write("\tDate de début (jj/mm/aaaa)        : (choisir une date en mars 2021 ex: 10/03/2021) ");
             string dateDebut = Console.ReadLine();
 
-            Console.Write("Date de fin (jj/mm/aaaa)          : ");
+            Console.Write("\tDate de fin (jj/mm/aaaa)          : ");
             string dateFin = Console.ReadLine();
 
             return new string[] { nbPersonne, dateDebut, dateFin };
@@ -196,20 +193,19 @@ namespace Exercice4_App
         {
             if (offres == null || offres.Equals(""))
             {
-                Console.WriteLine("[-] Nous sommes désolé mais aucune offre n'est disponible");
+                ConsoleWriteLineWithFlag(2, "Nous sommes désolé mais aucune offre n'est disponible", false);
                 return null;
             }
 
-            Console.WriteLine("\n\n[~] Voici les offres disponibles, choississez celle qui vous plaît.");
-
+            ConsoleWriteLineWithForegroundColor(ConsoleColor.Blue, "\n\n\t# ------------------------------------ Offres disponibles ------------------------------------ #");
+            
             int choice = -1;
-
             do
             {
                 int i = 1;
                 foreach (Chambre offre in offres)
                 {
-                    Console.WriteLine("Offre#" + i);
+                    ConsoleWriteLineWithForegroundColor(ConsoleColor.Blue, "\n\nOffre#" + i + " --------------");
                     offre.Display();
 
                     Form1 form = new Form1(offre.ImageURL, " - Offre " + i + "\n", offre.ToString(), "");
@@ -217,7 +213,8 @@ namespace Exercice4_App
                     i++;
                 }
 
-                Console.Write("\n(Utiliser 0 pour annuler et revenir en arrière)\nVous souhaitez réserver l'Offre#");
+                ConsoleWriteLineWithForegroundColor(ConsoleColor.Red, "(utiliser 0 pour annuler et revenir en arrière)");
+                Console.Write("Vous souhaitez réserver l'Offre#");
                 choice = int.Parse(Console.ReadLine());
             } while (choice < 0 || choice > offres.Count);
 
@@ -233,18 +230,18 @@ namespace Exercice4_App
         {
             Client client = new Client();
 
-            Console.WriteLine("\n[~] Veuillez saisir vos informations pour compléter la réservation: ");
-            Console.WriteLine("/!\\ (Pour annuler la réservation taper uniquement sur entrée) /!\\");
-            Console.Write("Votre nom               : ");
+            ConsoleWriteLineWithForegroundColor(ConsoleColor.Red, "(pour annuler la réservation taper uniquement sur entrée)\n");
+            ConsoleWriteLineWithFlag(1, "Veuillez saisir vos informations pour compléter la réservation: \n", true);
+            Console.Write("\tVotre nom               : ");
             string nom = Console.ReadLine();
             if (nom.Equals(""))
             {
                 return null;
             }
             client.Nom = nom;
-            Console.Write("Votre prénom            : ");
+            Console.Write("\tVotre prénom            : ");
             client.Prenom = Console.ReadLine();
-            Console.Write("Vos coordonnée bancaire : (peut-être vide ou n'importe quoi ici) ");
+            Console.Write("\tVos coordonnée bancaire : (anything you want) ");
             client.CarteCredit = Console.ReadLine();
 
             return client;
@@ -255,10 +252,58 @@ namespace Exercice4_App
             Form1 form = new Form1(offre.ImageURL, "Récapitulatif de réservation: " + "\n", offre.ToString(), client.ToString());
             form.ShowDialog();
 
-            Console.Write("[~] Confirmer la réservation ? (NON: 0, OUI: 1) ");
+            ConsoleWriteLineWithFlag(2, "Confirmer la réservation ? (NON: 0, OUI: 1) ");
 
             return (int.Parse(Console.ReadLine()) == 1);
         }
 
+        private static void ConsoleWriteLineWithForegroundColor(ConsoleColor color, String message)
+        {
+            Console.ForegroundColor = color;
+            Console.WriteLine(message);
+            Console.ResetColor();
+        }
+
+        //
+        //Paramètres :
+        //  flagType:
+        //      0: [+]
+        //      1: [~]
+        //      2: [!]
+        //      3: [-]
+        private static void ConsoleWriteLineWithFlag(int flagType, string message, bool addForeground=false)
+        {
+            switch (flagType)
+            {
+                case 0:
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.Write("\n\n[+] ");
+                    break;
+                case 1:
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    Console.Write("\n\n[~] ");
+                    break;
+                case 2:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write("\n\n[!] ");
+                    break;
+                case 3:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write("\n\n[-] ");
+                    break;
+                default:
+                    break;
+            }
+            if (addForeground)
+            {
+                Console.Write(message);
+                Console.ResetColor();
+            }
+            else
+            {
+                Console.ResetColor();
+                Console.Write(message);
+            }
+        }
     }
 }

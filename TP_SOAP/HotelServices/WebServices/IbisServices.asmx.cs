@@ -40,6 +40,12 @@ namespace HotelServices
         }
 
         [WebMethod]
+        public string GetHotel()
+        {
+            return hotel.ToString();
+        }
+
+        [WebMethod]
         public string GetOffres(DateTime date, int nbPersonne)
         {
             if (isAuth)
@@ -54,7 +60,7 @@ namespace HotelServices
                         nbPersonne <= chambre.NbPersonneMax ||
                         chambre.Disponible ||
                         (chambre.Reservations.Count != 0 && DateTime.Compare(chambre.Reservations.Last().DateDepart, date) <= 0)))
-                    .Select(chambre => new Chambre(chambre.Id, chambre.NbPersonneMax, chambre.NbLit, chambre.Prix * agencePartenaire.Pourcentage, chambre.ImageURL, chambre.Disponible, chambre.Reservations)));
+                    .Select(chambre => new Chambre(chambre.NumChambre, chambre.NbPersonneMax, chambre.NbLit, chambre.Prix * agencePartenaire.Pourcentage, chambre.ImageURL, chambre.Disponible, chambre.Reservations)));
             }
 
             return null;
@@ -82,7 +88,7 @@ namespace HotelServices
             Chambre chambre = hotel.Chambres[reservation.ChambreId];
             chambre.Disponible = false;
             chambre.Reservations.Add(reservation);
-            return "[+] Réservation effectué avec succées!";
+            return "Réservation effectué avec succées!";
         }
 
         [WebMethod]
