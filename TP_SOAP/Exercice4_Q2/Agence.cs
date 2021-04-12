@@ -8,26 +8,14 @@ namespace Exercice4_App
 {
     public class Agence
     {
-
-        private string nom;
-        private double tarifPropre;
-
         public Agence(string nom, double tarifPropre) 
         {
-            this.nom = nom;
-            this.tarifPropre = tarifPropre;
+            this.Nom = nom;
+            this.Prix = tarifPropre;
         }
 
-        public string Nom
-        {
-            get => nom;
-            set => nom = value;
-        }
+        public string Nom { get; set; }
 
-        public double Prix
-        {
-            get => tarifPropre;
-            set => tarifPropre = value;
-        }
+        public double Prix { get; set; }
     }
 }

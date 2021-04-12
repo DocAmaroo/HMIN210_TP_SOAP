@@ -7,6 +7,7 @@ using Exercice4_App.Forms;
 using System.Threading.Tasks;
 using Exercice4_App.IbisHotelServices;
 using Exercice4_App.Formule1HotelServices;
+using Newtonsoft.Json;
 
 namespace Exercice4_App
 {
@@ -17,7 +18,10 @@ namespace Exercice4_App
 
             // --- Services des hotels
             IbisServices ibisServices = new IbisServices();
+            ibisServices.GenerateHotel();
             Formule1Services formule1Services = new Formule1Services();
+            formule1Services.GenerateHotel();
+
             Console.WriteLine("\t\t Bienvenue sur Trivaga, l'agence d'hotel au plus proche de ses clients !");
 
             while (true)
@@ -26,154 +30,103 @@ namespace Exercice4_App
                 string[] hotels = new string[2] { "Ibis", "Formule1" };
                 int hotelChoose = askHotel(hotels);
 
-                if (hotelChoose == 1)
+                Console.WriteLine("[+] Vous avez choisis l'hotel " + hotels[hotelChoose - 1]);
+
+                // --- Authentification simple (login: agenceName, password: admin)
+                string[] auth = HandleAuthentification("Trivaga");
+                int flag = 0;
+
+                switch(hotelChoose)
                 {
-                    Console.WriteLine("[+] Vous avez choisis l'hotel Ibis");
-
-                    // --- Authentification simple (login: agenceName, password: admin)
-                    string[] auth = HandleAuthentification("Trivaga");
-                    int flag = 0;
-                    while (!ibisServices.Authentification(auth[0], auth[1]))
-                    {
-                        if (auth[0].Equals(auth[1]) && auth[0].Equals("exit"))
+                    case 1:
+                        while (!ibisServices.Authentification(auth[0], auth[1]))
                         {
-                            flag = -1;
-                            break;
+                            if (auth[0].Equals(auth[1]) && auth[0].Equals("exit"))
+                            {
+                                flag = -1;
+                                break;
+                            }
+                            Console.WriteLine("[-] Login ou mot de passe incorrect. Veuillez recommencer");
+                            auth = HandleAuthentification("Trivaga");
+                            flag = 0;
                         }
-                        Console.WriteLine("[-] Login ou mot de passe incorrect. Veuillez recommencer");
-                        auth = HandleAuthentification("Trivaga");
-                        flag = 0;
-                    }
-
-                    if (flag != -1)
-                    {
-                        // --- On demande à l'utilisateur ce qu'il recherche
-                        string[] filter = askOffresFilter();
-                        string offres = ibisServices.GetOffres(ParseDate(filter[1]), int.Parse(filter[0]));
-
-                        // --- On affiche à l'utilisateur les offres qui correspondent
-                        string offreChoose;
-                        while ((offreChoose = askOffre(offres)) != null)
+                        break;
+                    case 2:
+                        while (!formule1Services.Authentification(auth[0], auth[1]))
                         {
-                            // --- L'utilisateur ne veut pas réserver
-                            string[] offreChooseSplit = ParseOffre(offreChoose);
-
-                            Client client;
-                            string reservationResponse = null;
-                            Console.WriteLine("\n[~] Vous souhaitez réserver l'offre suivante: ");
-                            displayOffre(offreChooseSplit);
-                             
-                            // --- On demande les informations clients, si non fournis on annule la réservation.
-                            client = askClientInformation();
-                            if (client == null)
+                            if (auth[0].Equals(auth[1]) && auth[0].Equals("exit"))
                             {
-                                Console.WriteLine("[-] Annulation de la réservation...");
+                                flag = -1;
+                                break;
                             }
-                            else
-                            {
-                                if (confirmReservation(offreChooseSplit, client.toArrString()))
-                                {
-                                    reservationResponse = ibisServices.MakeReservation(offreChooseSplit[0], client.toArrString());
-                                    if (reservationResponse == null)
-                                    {
-                                        Console.WriteLine("\n\n[-] Cette offre n'existe pas ou une erreur est survenue, veuillez réessayer.");
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine(reservationResponse);
-                                        break;
-                                    }
-                                }
-                                else
-                                {
-                                    Console.WriteLine("[-] Annulation de la réservation...");
-                                }
-                            }
+                            Console.WriteLine("[-] Login ou mot de passe incorrect. Veuillez recommencer");
+                            auth = HandleAuthentification("Trivaga");
+                            flag = 0;
                         }
-                    }
+                        break;
+                    default:
+                        flag = -1;
+                        break;
                 }
-
-                if (hotelChoose == 2)
+                    
+                if (flag != -1)
                 {
-                    Console.WriteLine("[+] Vous avez choisis l'hotel Formule1");
-
-                    // --- Authentification simple (login: agenceName, password: admin)
-                    string[] auth = HandleAuthentification("Trivaga");
-                    int flag = 0;
-                    while (!formule1Services.Authentification(auth[0], auth[1]))
+                    // --- On demande à l'utilisateur ce qu'il recherche
+                    string[] filter = askOffresFilter();
+                    string jsonOffres = "";
+                    switch (hotelChoose)
                     {
-                        if (auth[0].Equals(auth[1]) && auth[0].Equals("exit"))
-                        {
-                            flag = -1;
+                        case 1:
+                            jsonOffres = ibisServices.GetOffres(ParseDate(filter[1]), int.Parse(filter[0]));
                             break;
-                        }
-                        Console.WriteLine("[-] Login ou mot de passe incorrect. Veuillez recommencer");
-                        auth = HandleAuthentification("Trivaga");
-                        flag = 0;
+                        case 2:
+                            jsonOffres = formule1Services.GetOffres(ParseDate(filter[1]), int.Parse(filter[0]));
+                            break;
                     }
-                    if (flag != -1)
+                    List<Chambre> offres = JsonConvert.DeserializeObject<List<Chambre>>(jsonOffres);
+
+                    // --- On affiche à l'utilisateur les offres qui correspondent
+                    Chambre offreChoose;
+                    while ((offreChoose = askOffre(offres)) != null)
                     {
-                        // --- On demande à l'utilisateur ce qu'il recherche
-                        string[] filter = askOffresFilter();
-                        string offres = formule1Services.GetOffres(ParseDate(filter[1]), int.Parse(filter[0]));
+                        Client client;
+                        string reservationResponse = null;
+                        Console.WriteLine("\n[~] Vous souhaitez réserver l'offre suivante: ");
+                        offreChoose.Display();
 
-                        // --- On affiche à l'utilisateur les offres qui correspondent
-                        string offreChoose;
-                        while ((offreChoose = askOffre(offres)) != null)
+                        // --- On demande les informations clients, si non fournis on annule la réservation.
+                        client = askClientInformation();
+                        if (client == null)
                         {
-                            // --- L'utilisateur ne veut pas réserver
-                            string[] offreChooseSplit = ParseOffre(offreChoose);
-
-                            Client client;
-                            string reservationResponse = null;
-                            Console.WriteLine("\n[~] Vous souhaitez réserver l'offre suivante: ");
-                            displayOffre(offreChooseSplit);
-
-                            // --- On demande les informations clients, si non fournis on annule la réservation.
-                            client = askClientInformation();
-                            if (client == null)
+                            Console.WriteLine("[-] Annulation de la réservation...");
+                        }
+                        else
+                        {
+                            if (confirmReservation(offreChoose, client))
                             {
-                                Console.WriteLine("[-] Annulation de la réservation...");
-                            }
-                            else
-                            {
-                                if (confirmReservation(offreChooseSplit, client.toArrString()))
+                                Reservation reservation = new Reservation(ParseDate(filter[1]), ParseDate(filter[2]), int.Parse(filter[0]), client, offreChoose.Id);
+                                String jsonReservation = JsonConvert.SerializeObject(reservation);
+                                switch (hotelChoose)
                                 {
-                                    reservationResponse = formule1Services.MakeReservation(offreChooseSplit[0], client.toArrString());
-                                    if (reservationResponse == null)
-                                    {
-                                        Console.WriteLine("\n\n[-] Cette offre n'existe pas ou une erreur est survenue, veuillez réessayer.");
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine(reservationResponse);
+                                    case 1:
+                                        reservationResponse = ibisServices.MakeReservation(jsonReservation);
                                         break;
-                                    }
+                                    case 2:
+                                        reservationResponse = formule1Services.MakeReservation(jsonReservation);
+                                        break;
                                 }
+                                if (reservationResponse == null) Console.WriteLine("\n\n[-] Cette offre n'existe pas ou une erreur est survenue, veuillez réessayer.");
                                 else
                                 {
-                                    Console.WriteLine("[-] Annulation de la réservation...");
+                                    Console.WriteLine(reservationResponse);
+                                    break;
                                 }
                             }
+                            else Console.WriteLine("[-] Annulation de la réservation...");
                         }
                     }
                 }
             }
-        }
-
-        static string[] ParseOffres(string offres)
-        {
-            string[] offresSplit = offres.Split('#');
-
-            // --- On supprime la dernière cases car elle est vide
-            Array.Resize(ref offresSplit, offresSplit.Length - 1);
-
-            return offresSplit;
-        }
-
-        static string[] ParseOffre(string offre)
-        {
-            return offre.Split('|');
         }
 
         static DateTime ParseDate(string date)
@@ -238,7 +191,7 @@ namespace Exercice4_App
             return new string[] { nbPersonne, dateDebut, dateFin };
         }
 
-        static string askOffre(string offres)
+        static Chambre askOffre(List<Chambre> offres)
         {
             if (offres == null || offres.Equals(""))
             {
@@ -249,29 +202,27 @@ namespace Exercice4_App
             Console.WriteLine("\n\n[~] Voici les offres disponibles, choississez celle qui vous plaît.");
 
             int choice = -1;
-            string[] offresSplit = ParseOffres(offres);
 
             do
             {
                 int i = 1;
-                foreach (string offre in offresSplit)
+                foreach (Chambre offre in offres)
                 {
                     Console.WriteLine("Offre#" + i);
-                    string[] offreSplit = ParseOffre(offre);
-                    displayOffre(offreSplit);
+                    offre.Display();
 
-                    Form1 form = new Form1(offreSplit[5], " - Offre " + i + "\n", offreToString(offreSplit), "");
+                    Form1 form = new Form1(offre.ImageURL, " - Offre " + i + "\n", offre.ToString(), "");
                     form.ShowDialog();
                     i++;
                 }
 
                 Console.Write("\n(Utiliser 0 pour annuler et revenir en arrière)\nVous souhaitez réserver l'Offre#");
                 choice = int.Parse(Console.ReadLine());
-            } while (choice < 0 || choice > offres.Length);
+            } while (choice < 0 || choice > offres.Count);
 
             if (choice > 0)
             {
-                return offresSplit[choice - 1];
+                return offres.ElementAt(choice - 1);
             }
 
             return null;
@@ -298,39 +249,15 @@ namespace Exercice4_App
             return client;
         }
 
-        static void displayOffre(string[] offre)
+        static bool confirmReservation(Chambre offre, Client client)
         {
-            Console.WriteLine("\tChambre n°" + offre[2]);
-            Console.WriteLine("\tNombre lits   : " + offre[3]);
-            Console.WriteLine("\tPrix          : " + offre[4] + "euros/nuit");
-            Console.WriteLine("\tDisponible le : " + offre[1]);
-        }
-
-        static string offreToString(string[] offre)
-        {
-            return 
-                "\tChambre n°" + offre[2]
-                + "\n\tNombre lits   : " + offre[3]
-                + "\n\tPrix          : " + offre[4] + "euros/nuit"
-                + "\n\tDisponible le : " + offre[1];
-        }
-    
-        static string clientToString(string[] client)
-        {
-            return
-                "\tNom                    : " + client[0]
-                + "\nPrénom               : " + client[1]
-                + "\nCoordonées bancaires : " + client[2];
-        }
-
-        static bool confirmReservation(string[] offre, string[] client)
-        {
-            Form1 form = new Form1(offre[5], "Récapitulatif de réservation: " + "\n", offreToString(offre), clientToString(client));
+            Form1 form = new Form1(offre.ImageURL, "Récapitulatif de réservation: " + "\n", offre.ToString(), client.ToString());
             form.ShowDialog();
 
             Console.Write("[~] Confirmer la réservation ? (NON: 0, OUI: 1) ");
 
             return (int.Parse(Console.ReadLine()) == 1);
         }
+
     }
 }

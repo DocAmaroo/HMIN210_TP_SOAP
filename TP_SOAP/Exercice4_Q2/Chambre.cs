@@ -8,60 +8,53 @@ namespace Exercice4_App
 {
     public class Chambre
     {
-        private static int id = 0;
-        private int numChambre;
-        private int nbLit;
-        private int prix;
-        private int nbPersonneMax;
-        private string imageURL;
-
         public Chambre () { }
 
-        public Chambre(int numChambre, int nbPersonneMax, int nbLit, int prix, string imageURL)
+        public Chambre(int numChambre, int nbPersonneMax, int nbLit, int prix, string imageURL, bool disp)
         {
-            id = id + 1;
+            this.Id = numChambre - 1;
             this.NumChambre = numChambre;
             this.NbLit = nbLit;
             this.Prix = prix;
             this.NbPersonneMax = nbPersonneMax;
             this.ImageURL = imageURL;
+            this.Disponible = disp;
+            this.Reservations = new List<Reservation>();
         }
 
-        public int Id 
-        { 
-            get => id; 
-            set => id = value; 
+        public Chambre(int numChambre, int nbPersonneMax, int nbLit, int prix, string imageURL, bool disp, List<Reservation> reservations)
+        {
+            this.Id = numChambre - 1;
+            this.NumChambre = numChambre;
+            this.NbLit = nbLit;
+            this.Prix = prix;
+            this.NbPersonneMax = nbPersonneMax;
+            this.ImageURL = imageURL;
+            this.Disponible = disp;
+            this.Reservations = reservations;
         }
 
-        public int NumChambre 
-        { 
-            get => numChambre; 
-            set => numChambre = value; 
+        public int Id { get; set; }
+        public int NumChambre { get; set; }
+        public int NbPersonneMax { get; set; }
+        public int NbLit { get; set; }
+        public int Prix { get; set; }
+        public string ImageURL { get; set; }
+        public bool Disponible { get; set; }
+        public List<Reservation> Reservations { get; set; }
+        public void Display()
+        {
+            Console.WriteLine("\tChambre n°" + this.NumChambre);
+            Console.WriteLine("\tNombre lits   : " + this.NbLit);
+            Console.WriteLine("\tPrix          : " + this.Prix + "euros/nuit");
+            Console.WriteLine("\tDisponible " + (this.Reservations.Count != 0 ? "le :" + this.Reservations.Last().DateDepart : "dès maintenant"));
         }
-
-        public int NbPersonneMax 
-        { 
-            get => nbPersonneMax; 
-            set => nbPersonneMax = value; 
+        public override string ToString()
+        {
+            return "\tChambre n°" + this.NumChambre
+            + "\n\tNombre lits   : " + this.NbLit
+            + "\n\tPrix          : " + this.Prix + "euros/nuit"
+            + "\n\tDisponible " + (this.Reservations.Count != 0 ? "le :" + this.Reservations.Last().DateDepart : "dès maintenant");
         }
-
-        public int NbLit 
-        { 
-            get => nbLit; 
-            set => nbLit = value; 
-        }
-
-        public int Prix 
-        { 
-            get => prix; 
-            set => prix = value; 
-        }
-
-        public string ImageURL 
-        { 
-            get => imageURL; 
-            set => imageURL = value; 
-        }
-
     }
 }

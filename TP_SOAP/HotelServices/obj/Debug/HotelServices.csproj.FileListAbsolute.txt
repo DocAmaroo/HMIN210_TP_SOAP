@@ -41,3 +41,16 @@ D:\mydoc\classes\fac\M1Aigle\s2\HMIN210\td\td4\Exercice4_Q2\HotelServices\obj\De
 D:\mydoc\classes\fac\M1Aigle\s2\HMIN210\td\td4\Exercice4_Q2\HotelServices\obj\Debug\HotelServices.csproj.CopyComplete
 D:\mydoc\classes\fac\M1Aigle\s2\HMIN210\td\td4\Exercice4_Q2\HotelServices\obj\Debug\HotelServices.dll
 D:\mydoc\classes\fac\M1Aigle\s2\HMIN210\td\td4\Exercice4_Q2\HotelServices\obj\Debug\HotelServices.pdb
+D:\mydoc\classes\fac\gitTemp\HMIN210_TP_SOAP\TP_SOAP\HotelServices\obj\Debug\HotelServices.csprojAssemblyReference.cache
+D:\mydoc\classes\fac\gitTemp\HMIN210_TP_SOAP\TP_SOAP\HotelServices\obj\Debug\HotelServices.csproj.CoreCompileInputs.cache
+D:\mydoc\classes\fac\gitTemp\HMIN210_TP_SOAP\TP_SOAP\HotelServices\bin\HotelServices.dll.config
+D:\mydoc\classes\fac\gitTemp\HMIN210_TP_SOAP\TP_SOAP\HotelServices\bin\HotelServices.dll
+D:\mydoc\classes\fac\gitTemp\HMIN210_TP_SOAP\TP_SOAP\HotelServices\bin\HotelServices.pdb
+D:\mydoc\classes\fac\gitTemp\HMIN210_TP_SOAP\TP_SOAP\HotelServices\bin\Exercice4_App.exe
+D:\mydoc\classes\fac\gitTemp\HMIN210_TP_SOAP\TP_SOAP\HotelServices\bin\Newtonsoft.Json.dll
+D:\mydoc\classes\fac\gitTemp\HMIN210_TP_SOAP\TP_SOAP\HotelServices\bin\Exercice4_App.pdb
+D:\mydoc\classes\fac\gitTemp\HMIN210_TP_SOAP\TP_SOAP\HotelServices\bin\Exercice4_App.exe.config
+D:\mydoc\classes\fac\gitTemp\HMIN210_TP_SOAP\TP_SOAP\HotelServices\bin\Newtonsoft.Json.xml
+D:\mydoc\classes\fac\gitTemp\HMIN210_TP_SOAP\TP_SOAP\HotelServices\obj\Debug\HotelServices.csproj.CopyComplete
+D:\mydoc\classes\fac\gitTemp\HMIN210_TP_SOAP\TP_SOAP\HotelServices\obj\Debug\HotelServices.dll
+D:\mydoc\classes\fac\gitTemp\HMIN210_TP_SOAP\TP_SOAP\HotelServices\obj\Debug\HotelServices.pdb

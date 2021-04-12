@@ -37,6 +37,8 @@ namespace Exercice4_App.IbisHotelServices {
         
         private System.Threading.SendOrPostCallback MakeReservationOperationCompleted;
         
+        private System.Threading.SendOrPostCallback GenerateHotelOperationCompleted;
+        
         private bool useDefaultCredentialsSetExplicitly;
         
         /// <remarks/>
@@ -86,6 +88,9 @@ namespace Exercice4_App.IbisHotelServices {
         
         /// <remarks/>
         public event MakeReservationCompletedEventHandler MakeReservationCompleted;
+        
+        /// <remarks/>
+        public event GenerateHotelCompletedEventHandler GenerateHotelCompleted;
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/Authentification", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
@@ -151,19 +156,19 @@ namespace Exercice4_App.IbisHotelServices {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetOffre", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public string GetOffre(string id) {
+        public string GetOffre(int id) {
             object[] results = this.Invoke("GetOffre", new object[] {
                         id});
             return ((string)(results[0]));
         }
         
         /// <remarks/>
-        public void GetOffreAsync(string id) {
+        public void GetOffreAsync(int id) {
             this.GetOffreAsync(id, null);
         }
         
         /// <remarks/>
-        public void GetOffreAsync(string id, object userState) {
+        public void GetOffreAsync(int id, object userState) {
             if ((this.GetOffreOperationCompleted == null)) {
                 this.GetOffreOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetOffreOperationCompleted);
             }
@@ -180,32 +185,56 @@ namespace Exercice4_App.IbisHotelServices {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/MakeReservation", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public string MakeReservation(string id, string[] client) {
+        public string MakeReservation(string jsonReservation) {
             object[] results = this.Invoke("MakeReservation", new object[] {
-                        id,
-                        client});
+                        jsonReservation});
             return ((string)(results[0]));
         }
         
         /// <remarks/>
-        public void MakeReservationAsync(string id, string[] client) {
-            this.MakeReservationAsync(id, client, null);
+        public void MakeReservationAsync(string jsonReservation) {
+            this.MakeReservationAsync(jsonReservation, null);
         }
         
         /// <remarks/>
-        public void MakeReservationAsync(string id, string[] client, object userState) {
+        public void MakeReservationAsync(string jsonReservation, object userState) {
             if ((this.MakeReservationOperationCompleted == null)) {
                 this.MakeReservationOperationCompleted = new System.Threading.SendOrPostCallback(this.OnMakeReservationOperationCompleted);
             }
             this.InvokeAsync("MakeReservation", new object[] {
-                        id,
-                        client}, this.MakeReservationOperationCompleted, userState);
+                        jsonReservation}, this.MakeReservationOperationCompleted, userState);
         }
         
         private void OnMakeReservationOperationCompleted(object arg) {
             if ((this.MakeReservationCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.MakeReservationCompleted(this, new MakeReservationCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GenerateHotel", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void GenerateHotel() {
+            this.Invoke("GenerateHotel", new object[0]);
+        }
+        
+        /// <remarks/>
+        public void GenerateHotelAsync() {
+            this.GenerateHotelAsync(null);
+        }
+        
+        /// <remarks/>
+        public void GenerateHotelAsync(object userState) {
+            if ((this.GenerateHotelOperationCompleted == null)) {
+                this.GenerateHotelOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGenerateHotelOperationCompleted);
+            }
+            this.InvokeAsync("GenerateHotel", new object[0], this.GenerateHotelOperationCompleted, userState);
+        }
+        
+        private void OnGenerateHotelOperationCompleted(object arg) {
+            if ((this.GenerateHotelCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GenerateHotelCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -331,6 +360,10 @@ namespace Exercice4_App.IbisHotelServices {
             }
         }
     }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void GenerateHotelCompletedEventHandler(object sender, System.ComponentModel.AsyncCompletedEventArgs e);
 }
 
 #pragma warning restore 1591

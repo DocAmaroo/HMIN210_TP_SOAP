@@ -2,13 +2,13 @@
 <wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
   <wsdl:types>
     <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
-      <s:element name="getTarifPropre">
+      <s:element name="GetTarifPropre">
         <s:complexType />
       </s:element>
-      <s:element name="getTarifPropreResponse">
+      <s:element name="GetTarifPropreResponse">
         <s:complexType>
           <s:sequence>
-            <s:element minOccurs="1" maxOccurs="1" name="getTarifPropreResult" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="GetTarifPropreResult" type="s:double" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -45,7 +45,7 @@
       <s:element name="GetOffre">
         <s:complexType>
           <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="id" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="id" type="s:int" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -59,16 +59,10 @@
       <s:element name="MakeReservation">
         <s:complexType>
           <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="id" type="s:string" />
-            <s:element minOccurs="0" maxOccurs="1" name="client" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="jsonReservation" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
-      <s:complexType name="ArrayOfString">
-        <s:sequence>
-          <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string" />
-        </s:sequence>
-      </s:complexType>
       <s:element name="MakeReservationResponse">
         <s:complexType>
           <s:sequence>
@@ -76,13 +70,19 @@
           </s:sequence>
         </s:complexType>
       </s:element>
+      <s:element name="GenerateHotel">
+        <s:complexType />
+      </s:element>
+      <s:element name="GenerateHotelResponse">
+        <s:complexType />
+      </s:element>
     </s:schema>
   </wsdl:types>
-  <wsdl:message name="getTarifPropreSoapIn">
-    <wsdl:part name="parameters" element="tns:getTarifPropre" />
+  <wsdl:message name="GetTarifPropreSoapIn">
+    <wsdl:part name="parameters" element="tns:GetTarifPropre" />
   </wsdl:message>
-  <wsdl:message name="getTarifPropreSoapOut">
-    <wsdl:part name="parameters" element="tns:getTarifPropreResponse" />
+  <wsdl:message name="GetTarifPropreSoapOut">
+    <wsdl:part name="parameters" element="tns:GetTarifPropreResponse" />
   </wsdl:message>
   <wsdl:message name="AuthentificationSoapIn">
     <wsdl:part name="parameters" element="tns:Authentification" />
@@ -108,10 +108,16 @@
   <wsdl:message name="MakeReservationSoapOut">
     <wsdl:part name="parameters" element="tns:MakeReservationResponse" />
   </wsdl:message>
+  <wsdl:message name="GenerateHotelSoapIn">
+    <wsdl:part name="parameters" element="tns:GenerateHotel" />
+  </wsdl:message>
+  <wsdl:message name="GenerateHotelSoapOut">
+    <wsdl:part name="parameters" element="tns:GenerateHotelResponse" />
+  </wsdl:message>
   <wsdl:portType name="Formule1ServicesSoap">
-    <wsdl:operation name="getTarifPropre">
-      <wsdl:input message="tns:getTarifPropreSoapIn" />
-      <wsdl:output message="tns:getTarifPropreSoapOut" />
+    <wsdl:operation name="GetTarifPropre">
+      <wsdl:input message="tns:GetTarifPropreSoapIn" />
+      <wsdl:output message="tns:GetTarifPropreSoapOut" />
     </wsdl:operation>
     <wsdl:operation name="Authentification">
       <wsdl:input message="tns:AuthentificationSoapIn" />
@@ -129,11 +135,15 @@
       <wsdl:input message="tns:MakeReservationSoapIn" />
       <wsdl:output message="tns:MakeReservationSoapOut" />
     </wsdl:operation>
+    <wsdl:operation name="GenerateHotel">
+      <wsdl:input message="tns:GenerateHotelSoapIn" />
+      <wsdl:output message="tns:GenerateHotelSoapOut" />
+    </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="Formule1ServicesSoap" type="tns:Formule1ServicesSoap">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
-    <wsdl:operation name="getTarifPropre">
-      <soap:operation soapAction="http://tempuri.org/getTarifPropre" style="document" />
+    <wsdl:operation name="GetTarifPropre">
+      <soap:operation soapAction="http://tempuri.org/GetTarifPropre" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -177,11 +187,20 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="GenerateHotel">
+      <soap:operation soapAction="http://tempuri.org/GenerateHotel" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:binding name="Formule1ServicesSoap12" type="tns:Formule1ServicesSoap">
     <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
-    <wsdl:operation name="getTarifPropre">
-      <soap12:operation soapAction="http://tempuri.org/getTarifPropre" style="document" />
+    <wsdl:operation name="GetTarifPropre">
+      <soap12:operation soapAction="http://tempuri.org/GetTarifPropre" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -218,6 +237,15 @@
     </wsdl:operation>
     <wsdl:operation name="MakeReservation">
       <soap12:operation soapAction="http://tempuri.org/MakeReservation" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GenerateHotel">
+      <soap12:operation soapAction="http://tempuri.org/GenerateHotel" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

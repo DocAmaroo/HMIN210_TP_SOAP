@@ -35,7 +35,7 @@
       <s:element name="GetOffre">
         <s:complexType>
           <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="id" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="id" type="s:int" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -49,22 +49,22 @@
       <s:element name="MakeReservation">
         <s:complexType>
           <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="id" type="s:string" />
-            <s:element minOccurs="0" maxOccurs="1" name="client" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="jsonReservation" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
-      <s:complexType name="ArrayOfString">
-        <s:sequence>
-          <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string" />
-        </s:sequence>
-      </s:complexType>
       <s:element name="MakeReservationResponse">
         <s:complexType>
           <s:sequence>
             <s:element minOccurs="0" maxOccurs="1" name="MakeReservationResult" type="s:string" />
           </s:sequence>
         </s:complexType>
+      </s:element>
+      <s:element name="GenerateHotel">
+        <s:complexType />
+      </s:element>
+      <s:element name="GenerateHotelResponse">
+        <s:complexType />
       </s:element>
     </s:schema>
   </wsdl:types>
@@ -92,6 +92,12 @@
   <wsdl:message name="MakeReservationSoapOut">
     <wsdl:part name="parameters" element="tns:MakeReservationResponse" />
   </wsdl:message>
+  <wsdl:message name="GenerateHotelSoapIn">
+    <wsdl:part name="parameters" element="tns:GenerateHotel" />
+  </wsdl:message>
+  <wsdl:message name="GenerateHotelSoapOut">
+    <wsdl:part name="parameters" element="tns:GenerateHotelResponse" />
+  </wsdl:message>
   <wsdl:portType name="IbisServicesSoap">
     <wsdl:operation name="Authentification">
       <wsdl:input message="tns:AuthentificationSoapIn" />
@@ -108,6 +114,10 @@
     <wsdl:operation name="MakeReservation">
       <wsdl:input message="tns:MakeReservationSoapIn" />
       <wsdl:output message="tns:MakeReservationSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GenerateHotel">
+      <wsdl:input message="tns:GenerateHotelSoapIn" />
+      <wsdl:output message="tns:GenerateHotelSoapOut" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="IbisServicesSoap" type="tns:IbisServicesSoap">
@@ -148,6 +158,15 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="GenerateHotel">
+      <soap:operation soapAction="http://tempuri.org/GenerateHotel" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:binding name="IbisServicesSoap12" type="tns:IbisServicesSoap">
     <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
@@ -180,6 +199,15 @@
     </wsdl:operation>
     <wsdl:operation name="MakeReservation">
       <soap12:operation soapAction="http://tempuri.org/MakeReservation" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GenerateHotel">
+      <soap12:operation soapAction="http://tempuri.org/GenerateHotel" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

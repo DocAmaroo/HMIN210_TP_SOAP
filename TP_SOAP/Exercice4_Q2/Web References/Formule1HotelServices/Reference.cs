@@ -29,7 +29,7 @@ namespace Exercice4_App.Formule1HotelServices {
     [System.Web.Services.WebServiceBindingAttribute(Name="Formule1ServicesSoap", Namespace="http://tempuri.org/")]
     public partial class Formule1Services : System.Web.Services.Protocols.SoapHttpClientProtocol {
         
-        private System.Threading.SendOrPostCallback getTarifPropreOperationCompleted;
+        private System.Threading.SendOrPostCallback GetTarifPropreOperationCompleted;
         
         private System.Threading.SendOrPostCallback AuthentificationOperationCompleted;
         
@@ -38,6 +38,8 @@ namespace Exercice4_App.Formule1HotelServices {
         private System.Threading.SendOrPostCallback GetOffreOperationCompleted;
         
         private System.Threading.SendOrPostCallback MakeReservationOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GenerateHotelOperationCompleted;
         
         private bool useDefaultCredentialsSetExplicitly;
         
@@ -78,7 +80,7 @@ namespace Exercice4_App.Formule1HotelServices {
         }
         
         /// <remarks/>
-        public event getTarifPropreCompletedEventHandler getTarifPropreCompleted;
+        public event GetTarifPropreCompletedEventHandler GetTarifPropreCompleted;
         
         /// <remarks/>
         public event AuthentificationCompletedEventHandler AuthentificationCompleted;
@@ -93,29 +95,32 @@ namespace Exercice4_App.Formule1HotelServices {
         public event MakeReservationCompletedEventHandler MakeReservationCompleted;
         
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/getTarifPropre", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public double getTarifPropre() {
-            object[] results = this.Invoke("getTarifPropre", new object[0]);
+        public event GenerateHotelCompletedEventHandler GenerateHotelCompleted;
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetTarifPropre", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public double GetTarifPropre() {
+            object[] results = this.Invoke("GetTarifPropre", new object[0]);
             return ((double)(results[0]));
         }
         
         /// <remarks/>
-        public void getTarifPropreAsync() {
-            this.getTarifPropreAsync(null);
+        public void GetTarifPropreAsync() {
+            this.GetTarifPropreAsync(null);
         }
         
         /// <remarks/>
-        public void getTarifPropreAsync(object userState) {
-            if ((this.getTarifPropreOperationCompleted == null)) {
-                this.getTarifPropreOperationCompleted = new System.Threading.SendOrPostCallback(this.OngetTarifPropreOperationCompleted);
+        public void GetTarifPropreAsync(object userState) {
+            if ((this.GetTarifPropreOperationCompleted == null)) {
+                this.GetTarifPropreOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetTarifPropreOperationCompleted);
             }
-            this.InvokeAsync("getTarifPropre", new object[0], this.getTarifPropreOperationCompleted, userState);
+            this.InvokeAsync("GetTarifPropre", new object[0], this.GetTarifPropreOperationCompleted, userState);
         }
         
-        private void OngetTarifPropreOperationCompleted(object arg) {
-            if ((this.getTarifPropreCompleted != null)) {
+        private void OnGetTarifPropreOperationCompleted(object arg) {
+            if ((this.GetTarifPropreCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.getTarifPropreCompleted(this, new getTarifPropreCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+                this.GetTarifPropreCompleted(this, new GetTarifPropreCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -183,19 +188,19 @@ namespace Exercice4_App.Formule1HotelServices {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetOffre", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public string GetOffre(string id) {
+        public string GetOffre(int id) {
             object[] results = this.Invoke("GetOffre", new object[] {
                         id});
             return ((string)(results[0]));
         }
         
         /// <remarks/>
-        public void GetOffreAsync(string id) {
+        public void GetOffreAsync(int id) {
             this.GetOffreAsync(id, null);
         }
         
         /// <remarks/>
-        public void GetOffreAsync(string id, object userState) {
+        public void GetOffreAsync(int id, object userState) {
             if ((this.GetOffreOperationCompleted == null)) {
                 this.GetOffreOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetOffreOperationCompleted);
             }
@@ -212,32 +217,56 @@ namespace Exercice4_App.Formule1HotelServices {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/MakeReservation", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public string MakeReservation(string id, string[] client) {
+        public string MakeReservation(string jsonReservation) {
             object[] results = this.Invoke("MakeReservation", new object[] {
-                        id,
-                        client});
+                        jsonReservation});
             return ((string)(results[0]));
         }
         
         /// <remarks/>
-        public void MakeReservationAsync(string id, string[] client) {
-            this.MakeReservationAsync(id, client, null);
+        public void MakeReservationAsync(string jsonReservation) {
+            this.MakeReservationAsync(jsonReservation, null);
         }
         
         /// <remarks/>
-        public void MakeReservationAsync(string id, string[] client, object userState) {
+        public void MakeReservationAsync(string jsonReservation, object userState) {
             if ((this.MakeReservationOperationCompleted == null)) {
                 this.MakeReservationOperationCompleted = new System.Threading.SendOrPostCallback(this.OnMakeReservationOperationCompleted);
             }
             this.InvokeAsync("MakeReservation", new object[] {
-                        id,
-                        client}, this.MakeReservationOperationCompleted, userState);
+                        jsonReservation}, this.MakeReservationOperationCompleted, userState);
         }
         
         private void OnMakeReservationOperationCompleted(object arg) {
             if ((this.MakeReservationCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.MakeReservationCompleted(this, new MakeReservationCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GenerateHotel", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void GenerateHotel() {
+            this.Invoke("GenerateHotel", new object[0]);
+        }
+        
+        /// <remarks/>
+        public void GenerateHotelAsync() {
+            this.GenerateHotelAsync(null);
+        }
+        
+        /// <remarks/>
+        public void GenerateHotelAsync(object userState) {
+            if ((this.GenerateHotelOperationCompleted == null)) {
+                this.GenerateHotelOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGenerateHotelOperationCompleted);
+            }
+            this.InvokeAsync("GenerateHotel", new object[0], this.GenerateHotelOperationCompleted, userState);
+        }
+        
+        private void OnGenerateHotelOperationCompleted(object arg) {
+            if ((this.GenerateHotelCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GenerateHotelCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -262,17 +291,17 @@ namespace Exercice4_App.Formule1HotelServices {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
-    public delegate void getTarifPropreCompletedEventHandler(object sender, getTarifPropreCompletedEventArgs e);
+    public delegate void GetTarifPropreCompletedEventHandler(object sender, GetTarifPropreCompletedEventArgs e);
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class getTarifPropreCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class GetTarifPropreCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        internal getTarifPropreCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        internal GetTarifPropreCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
@@ -389,6 +418,10 @@ namespace Exercice4_App.Formule1HotelServices {
             }
         }
     }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void GenerateHotelCompletedEventHandler(object sender, System.ComponentModel.AsyncCompletedEventArgs e);
 }
 
 #pragma warning restore 1591

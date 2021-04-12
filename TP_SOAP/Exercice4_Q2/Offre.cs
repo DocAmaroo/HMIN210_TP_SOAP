@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,12 +9,6 @@ namespace Exercice4_App
 {
     public class Offre
     {
-        private int id;
-        private Chambre chambre;
-        private DateTime dateDisponibilite;
-        private double prix;
-        private string imageURL;
-        private bool disponible;
 
         public Offre() { }
 
@@ -27,40 +22,11 @@ namespace Exercice4_App
             this.Disponible = disponible;
         }
 
-        public int Id 
-        { 
-            get => id; 
-            set => id = value; 
-        }
-
-        public Chambre Chambre 
-        { 
-            get => chambre; 
-            set => chambre = value; 
-        }
-
-        public DateTime DateDisponibilite 
-        { 
-            get => dateDisponibilite; 
-            set => dateDisponibilite = value; 
-        }
-
-        public double Prix 
-        { 
-            get => prix; 
-            set => prix = value; 
-        }
-
-        public bool Disponible 
-        { 
-            get => disponible; 
-            set => disponible = value; 
-        }
-
-        public string ImageURL 
-        { 
-            get => imageURL; 
-            set => imageURL = value; 
-        }
+        public int Id { get; set; }
+        public Chambre Chambre { get; set; }
+        public DateTime DateDisponibilite { get; set; }
+        public double Prix { get; set; }
+        public bool Disponible { get; set; }
+        public string ImageURL { get; set; }
     }
 }
