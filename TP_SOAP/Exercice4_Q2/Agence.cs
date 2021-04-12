@@ -8,14 +8,14 @@ namespace Exercice4_App
 {
     public class Agence
     {
-        public Agence(string nom, double tarifPropre) 
+        public Agence(string nom, double pourcentage) 
         {
             this.Nom = nom;
-            this.Prix = tarifPropre;
+            this.Pourcentage = pourcentage;
         }
 
         public string Nom { get; set; }
 
-        public double Prix { get; set; }
+        public double Pourcentage { get; set; }
     }
 }

@@ -16,38 +16,29 @@ namespace HotelServices
     {
 
         private static Hotel hotel;
-        private static string defaultPassword = "admin";
         private static bool isAuth = false;
-        private static double tarifPropre = 1.00;
+        private static Agence agencePartenaire;
 
         public Formule1Services(){ }
 
-        [WebMethod]
-        public double GetTarifPropre()
-        {
-            return tarifPropre;
-        }
 
         [WebMethod]
         public bool Authentification(string login, string password)
         {
-            if (password.Equals(defaultPassword))
+            foreach(Agence agence in hotel.AgencesPartenaire)
             {
-                if (login.Equals("Trivaga") || login.Equals("admin"))
+                // On suppose que tout les logins existe et que le mot de passe sera forcément 'admin' vu que nous n'avons pas de base de donnée.
+
+                // On cherche si le login utilisé appartient à une agence partenaire
+                if (agence.Nom.Equals(login)) agencePartenaire = agence;
+                if (password.Equals("admin"))
                 {
                     isAuth = true;
-
-                    if (login.Equals("Trivaga"))
-                    {
-                        tarifPropre = 0.96;
-                    }
-
-                    return isAuth;
+                    return true;
                 }
             }
 
-            isAuth = false;
-            return isAuth;
+            return false;
         }
 
         [WebMethod]
@@ -55,18 +46,17 @@ namespace HotelServices
         {
             if (isAuth)
             {
-
-                List<Chambre> offresFound = new List<Chambre>();
-
-                foreach (Chambre chambre in hotel.Chambres)
-                {
-                    if (chambre.Disponible || (chambre.Reservations.Count != 0 && DateTime.Compare(chambre.Reservations.Last().DateDepart, date) <= 0))
-                    {
-                        if (chambre.NbPersonneMax >= nbPersonne) offresFound.Add(chambre);
-                    }
-                }
-
-                return JsonConvert.SerializeObject(offresFound);
+                if (agencePartenaire == null) return JsonConvert.SerializeObject(hotel.Chambres
+                    .FindAll(chambre => (
+                        nbPersonne <= chambre.NbPersonneMax ||
+                        chambre.Disponible ||
+                        (chambre.Reservations.Count != 0 && DateTime.Compare(chambre.Reservations.Last().DateDepart, date) <= 0))));
+                else return JsonConvert.SerializeObject(hotel.Chambres
+                    .FindAll(chambre => (
+                        nbPersonne <= chambre.NbPersonneMax ||
+                        chambre.Disponible ||
+                        (chambre.Reservations.Count != 0 && DateTime.Compare(chambre.Reservations.Last().DateDepart, date) <= 0)))
+                    .Select(chambre => new Chambre(chambre.Id, chambre.NbPersonneMax, chambre.NbLit, chambre.Prix * agencePartenaire.Pourcentage, chambre.ImageURL, chambre.Disponible, chambre.Reservations)));
             }
 
             return null;

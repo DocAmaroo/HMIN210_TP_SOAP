@@ -69,7 +69,6 @@
     <Compile Include="Chambre.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Hotel.cs" />
-    <Compile Include="Offre.cs" />
     <Compile Include="Reservation.cs" />
     <Compile Include="Forms\Form1.cs">
       <SubType>Form</SubType>

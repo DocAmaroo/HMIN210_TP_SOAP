@@ -18,9 +18,10 @@ namespace Exercice4_App
 
             // --- Services des hotels
             IbisServices ibisServices = new IbisServices();
-            ibisServices.GenerateHotel();
+            ibisServices.GenerateHotel(); // Met en place l'hotel (chambres, agence partenaire, etc..). Remplace une base de données
+
             Formule1Services formule1Services = new Formule1Services();
-            formule1Services.GenerateHotel();
+            formule1Services.GenerateHotel(); // Met en place l'hotel (chambres, agence partenaire, etc..). Remplace une base de données
 
             Console.WriteLine("\t\t Bienvenue sur Trivaga, l'agence d'hotel au plus proche de ses clients !");
 

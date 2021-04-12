@@ -29,8 +29,6 @@ namespace Exercice4_App.Formule1HotelServices {
     [System.Web.Services.WebServiceBindingAttribute(Name="Formule1ServicesSoap", Namespace="http://tempuri.org/")]
     public partial class Formule1Services : System.Web.Services.Protocols.SoapHttpClientProtocol {
         
-        private System.Threading.SendOrPostCallback GetTarifPropreOperationCompleted;
-        
         private System.Threading.SendOrPostCallback AuthentificationOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetOffresOperationCompleted;
@@ -80,9 +78,6 @@ namespace Exercice4_App.Formule1HotelServices {
         }
         
         /// <remarks/>
-        public event GetTarifPropreCompletedEventHandler GetTarifPropreCompleted;
-        
-        /// <remarks/>
         public event AuthentificationCompletedEventHandler AuthentificationCompleted;
         
         /// <remarks/>
@@ -96,33 +91,6 @@ namespace Exercice4_App.Formule1HotelServices {
         
         /// <remarks/>
         public event GenerateHotelCompletedEventHandler GenerateHotelCompleted;
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetTarifPropre", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public double GetTarifPropre() {
-            object[] results = this.Invoke("GetTarifPropre", new object[0]);
-            return ((double)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetTarifPropreAsync() {
-            this.GetTarifPropreAsync(null);
-        }
-        
-        /// <remarks/>
-        public void GetTarifPropreAsync(object userState) {
-            if ((this.GetTarifPropreOperationCompleted == null)) {
-                this.GetTarifPropreOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetTarifPropreOperationCompleted);
-            }
-            this.InvokeAsync("GetTarifPropre", new object[0], this.GetTarifPropreOperationCompleted, userState);
-        }
-        
-        private void OnGetTarifPropreOperationCompleted(object arg) {
-            if ((this.GetTarifPropreCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetTarifPropreCompleted(this, new GetTarifPropreCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/Authentification", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
@@ -286,32 +254,6 @@ namespace Exercice4_App.Formule1HotelServices {
                 return true;
             }
             return false;
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
-    public delegate void GetTarifPropreCompletedEventHandler(object sender, GetTarifPropreCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetTarifPropreCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetTarifPropreCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public double Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((double)(this.results[0]));
-            }
         }
     }
     
