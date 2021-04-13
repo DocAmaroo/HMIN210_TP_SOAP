@@ -54,14 +54,12 @@ namespace HotelServices
             {
                 if (agencePartenaire == null) return JsonConvert.SerializeObject(hotel.Chambres
                     .FindAll(chambre => (
-                        nbPersonne <= chambre.NbPersonneMax ||
-                        chambre.Disponible ||
-                        (chambre.Reservations.Count != 0 && DateTime.Compare(chambre.Reservations.Last().DateDepart, date) <= 0))));
+                        nbPersonne <= chambre.NbPersonneMax &&
+                        (chambre.Disponible || (chambre.Reservations.Count != 0 && DateTime.Compare(chambre.Reservations.Last().DateDepart, date) <= 0)))));
                 else return JsonConvert.SerializeObject(hotel.Chambres
                     .FindAll(chambre => (
-                        nbPersonne <= chambre.NbPersonneMax ||
-                        chambre.Disponible ||
-                        (chambre.Reservations.Count != 0 && DateTime.Compare(chambre.Reservations.Last().DateDepart, date) <= 0)))
+                        nbPersonne <= chambre.NbPersonneMax && 
+                        (chambre.Disponible || (chambre.Reservations.Count != 0 && DateTime.Compare(chambre.Reservations.Last().DateDepart, date) <= 0))))
                     .Select(chambre => new Chambre(chambre.NumChambre, chambre.NbPersonneMax, chambre.NbLit, chambre.Prix * agencePartenaire.Pourcentage, chambre.ImageURL, chambre.Disponible, chambre.Reservations)));
             }
 

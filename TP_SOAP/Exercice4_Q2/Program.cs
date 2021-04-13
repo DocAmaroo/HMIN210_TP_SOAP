@@ -120,6 +120,8 @@ namespace Exercice4_App
                                 else
                                 {
                                     ConsoleWriteLineWithFlag(0, reservationResponse, true);
+                                    Console.WriteLine("\n(appuyer sur une touche pour revenir au choix d'hotel ou quitter l'application...)");
+                                    Console.ReadLine();
                                     break;
                                 }
                             }
@@ -213,7 +215,7 @@ namespace Exercice4_App
                     i++;
                 }
 
-                ConsoleWriteLineWithForegroundColor(ConsoleColor.Red, "(utiliser 0 pour annuler et revenir en arrière)");
+                ConsoleWriteLineWithForegroundColor(ConsoleColor.Red, "\n\n(utiliser 0 pour annuler et revenir en arrière)");
                 Console.Write("Vous souhaitez réserver l'Offre#");
                 choice = int.Parse(Console.ReadLine());
             } while (choice < 0 || choice > offres.Count);
@@ -229,18 +231,17 @@ namespace Exercice4_App
         static Client askClientInformation()
         {
             Client client = new Client();
-
-            ConsoleWriteLineWithForegroundColor(ConsoleColor.Red, "(pour annuler la réservation taper uniquement sur entrée)\n");
             ConsoleWriteLineWithFlag(1, "Veuillez saisir vos informations pour compléter la réservation: \n", true);
+            ConsoleWriteLineWithForegroundColor(ConsoleColor.Red, "(pour annuler la réservation taper sur entrée)\n");
+            
             Console.Write("\tVotre nom               : ");
             string nom = Console.ReadLine();
-            if (nom.Equals(""))
-            {
-                return null;
-            }
-            client.Nom = nom;
+            if (nom.Equals("")) return null;
+            else client.Nom = nom;
+            
             Console.Write("\tVotre prénom            : ");
             client.Prenom = Console.ReadLine();
+            
             Console.Write("\tVos coordonnée bancaire : (anything you want) ");
             client.CarteCredit = Console.ReadLine();
 
@@ -252,7 +253,7 @@ namespace Exercice4_App
             Form1 form = new Form1(offre.ImageURL, "Récapitulatif de réservation: " + "\n", offre.ToString(), client.ToString());
             form.ShowDialog();
 
-            ConsoleWriteLineWithFlag(2, "Confirmer la réservation ? (NON: 0, OUI: 1) ");
+            ConsoleWriteLineWithFlag(2, "Confirmer la réservation ? (NON: 0, OUI: 1) ", true);
 
             return (int.Parse(Console.ReadLine()) == 1);
         }
